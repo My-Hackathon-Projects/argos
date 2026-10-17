@@ -6,7 +6,7 @@ const TEAM = [
   {
     name: "Rishabh Tiwari",
     role: "Co-Founder",
-    email: "rishtiwari98@gmail.com",
+    email: "rishabhworks98@gmail.com",
     linkedin: "https://www.linkedin.com/in/icon1c/",
     photo: "/images/rishabh-tiwari.jpeg",
     bio: "Software developer and applied AI researcher with experience across Amazon, Porsche, and SAP. He builds the resilient software architecture that helps ArgOS scale.",

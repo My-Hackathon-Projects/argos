@@ -1,5 +1,12 @@
 # ArgOS
 
+| | |
+|---|---|
+| Event | Hack-Nation, Challenge 02: The VC Brain (Maschmeyer Group) |
+| Date | July 2026 |
+| Type | Team project |
+| Team | Florian Sprick, Alexandre Boving and Rishabh Tiwari |
+
 ArgOS is an AI-native VC operating system, built for Challenge 02 (The VC Brain, Maschmeyer
 Group x Hack-Nation). It runs the
 funnel **Sourcing, Screening, Diligence, Decision**: discover founders from their public
@@ -7,10 +14,10 @@ footprint before they appear in any startup database, resolve noisy signals into
 claims with auditable trust scores, research the market around an opportunity with cited
 figures, and surface all of it in a live product UI.
 
-Design docs: `docs/public/Technical Design Document.md` (system design),
-`docs/claims-layer.md` (claims and scoring), `docs/market-layer.md` (market research agent),
-`docs/personal-data.md` (what personal data is held, and why erasure is not built yet),
-`docs/demo.md` (how to record the demo).
+Design docs: [`docs/public/Technical Design Document.md`](docs/public/Technical%20Design%20Document.md) (system design),
+[`docs/claims-layer.md`](docs/claims-layer.md) (claims and scoring), [`docs/market-layer.md`](docs/market-layer.md) (market research agent),
+[`docs/personal-data.md`](docs/personal-data.md) (what personal data is held, and why erasure is not built yet),
+[`docs/demo.md`](docs/demo.md) (how to record the demo).
 
 ---
 
@@ -45,27 +52,27 @@ flowchart TD
 
 How the pieces run in practice:
 
-1. **Sourcing** (`backend/app/sourcing/`): a LangGraph graph takes the investment thesis,
+1. **Sourcing** ([`backend/app/sourcing/`](backend/app/sourcing/)): a LangGraph graph takes the investment thesis,
    searches 13 public channels through Tavily (arXiv, GitHub, Devpost, Product Hunt, patents,
    accelerators, and more), screens the hits, resolves them to people, and persists founders,
    identities, and signals. Triggered manually from the UI or `POST /discovery/run`.
-2. **Claims** (`backend/app/claims/`): new signals are collapsed into deduplicated,
+2. **Claims** ([`backend/app/claims/`](backend/app/claims/)): new signals are collapsed into deduplicated,
    corroborated claims (exact dedup key hit, then embedding kNN, then LLM adjudication on the
    few candidates). Trust Score per claim and Founder Score per person are deterministic
    formulas over the evidence, so every number can be audited.
-3. **Market research** (`backend/app/market/`): given an opportunity, a second LangGraph graph
+3. **Market research** ([`backend/app/market/`](backend/app/market/)): given an opportunity, a second LangGraph graph
    plans searches, extracts sizing, competition, comparables, and KPI benchmarks in parallel,
    and synthesizes the Market axis. Every figure carries a basis of `reported`,
    `estimated_bottom_up`, or `gap`; a flagged gap beats an invented number.
-4. **Contract and UI**: Pydantic response models export to `backend/openapi.json`; orval
+4. **Contract and UI**: Pydantic response models export to [`backend/openapi.json`](backend/openapi.json); orval
    generates the typed TanStack Query client the Next.js app uses. A backend schema change the
    frontend has not caught up with becomes a TypeScript error.
 
 | Piece | Where | Runs on |
 |---|---|---|
-| Postgres + pgvector | `docker-compose.yml` | `:5433` |
-| Backend (FastAPI, incl. inbound `/apply` intake) | `backend/` | `localhost:8000` |
-| Frontend (Next.js 16 + TypeScript) | `frontend/` | `localhost:3000` |
+| Postgres + pgvector | [`docker-compose.yml`](docker-compose.yml) | `:5433` |
+| Backend (FastAPI, incl. inbound `/apply` intake) | [`backend/`](backend/) | `localhost:8000` |
+| Frontend (Next.js 16 + TypeScript) | [`frontend/`](frontend/) | `localhost:3000` |
 
 ---
 
@@ -129,11 +136,11 @@ Verify: <http://localhost:8000/health> returns `{"status":"ok","signals":N}` and
 
 Populate data: click **Run discovery** on `/sourcing` (30 to 60 seconds, needs API keys), or
 `curl -X POST http://localhost:8000/discovery/run`. Then generate claims with
-`uv run python -m app.claims.run` from `backend/`. For market research,
+`uv run python -m app.claims.run` from [`backend/`](backend/). For market research,
 `uv run python -m app.market.run` is a no-DB smoke run that writes
-`backend/examples/market_live_output.json`; persist analyses for the UI by calling
+[`backend/examples/market_live_output.json`](backend/examples/market_live_output.json); persist analyses for the UI by calling
 `app.market.service.run_market_analysis(...)` against an opportunity. Continuous scheduling
-(`backend/app/scheduler.py`) is on by default: discovery hourly, refresh every 6 hours; set
+([`backend/app/scheduler.py`](backend/app/scheduler.py)) is on by default: discovery hourly, refresh every 6 hours; set
 `CRON_ENABLED=false` in `.env` to disable it.
 
 ## API surface
@@ -188,7 +195,7 @@ Postgres must be up and migrated for `pytest`; only `test_contract.py` is DB-fre
 
 ## Troubleshooting
 
-- **Errors about `vector`**: use the `pgvector/pgvector` image from `docker-compose.yml`;
+- **Errors about `vector`**: use the `pgvector/pgvector` image from [`docker-compose.yml`](docker-compose.yml);
   plain Postgres fails the migrations.
 - **Port 8000 or 3000 taken**: a leftover server. macOS/Linux: `lsof -i :8000`;
   Windows: `Get-NetTCPConnection -LocalPort 8000`.
@@ -209,6 +216,6 @@ docker-compose.yml   pgvector Postgres (:5433)
 
 | Name | Email | LinkedIn |
 |---|---|---|
-| Rishabh Tiwari | <rishtiwari98@gmail.com> | [icon1c](https://www.linkedin.com/in/icon1c/) |
+| Rishabh Tiwari | <rishabhworks98@gmail.com> | [icon1c](https://www.linkedin.com/in/icon1c/) |
 | Alexandre Boving | <alexandre.boving@gmail.com> | [alexandre-boving](https://www.linkedin.com/in/alexandre-boving-04422a1b6/) |
 | Florian Sprick | <floriansprick@hotmail.com> | [florian-sprick](https://www.linkedin.com/in/florian-sprick/) |
